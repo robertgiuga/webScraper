@@ -1,6 +1,8 @@
 package com.example.repository;
 
 import com.example.domain.Website;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 
 import javax.net.ssl.SSLContext;
@@ -41,16 +43,13 @@ public class ElasticRepo implements IRepository<Website> {
     @Override
     public void update(Website w) {
         MediaType mediaType = MediaType.parse("application/json");
-        StringBuilder bodyValue= new StringBuilder("{\n").append("\"doc\" : {\n");
-        if(w.getDomain()!=null) bodyValue.append("\"domain\" :\""+w.getDomain()+"\",\n");
-        if(w.getName()!=null)  bodyValue.append("\"company_commercial_name\" :\""+w.getDomain()+"\",\n");
-        if(w.getLegalName()!=null) bodyValue.append("\"company_legal_name\" :\""+w.getDomain()+"\",\n");
-        if(w.getAvailableNames()!=null)  bodyValue.append("\"company_all_available_names\" :\""+String.join("|", w.getAvailableNames())+"\",\n");
-        if(w.getTelephones()!=null)  bodyValue.append("\"telephone\" :\""+String.join("|", w.getTelephones())+"\",\n");
-        if(w.getMediaLinks()!=null) bodyValue.append("\"socialLinks\" :\""+String.join("|", w.getMediaLinks())+"\",\n");
-        bodyValue.deleteCharAt(bodyValue.length()-2);
-        bodyValue.append("}\n").append("}");
-
+        StringBuilder bodyValue= new StringBuilder("{\n").append("\"doc\" :\n");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            bodyValue.append(objectMapper.writeValueAsString(w)).append("\n}");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         RequestBody body = RequestBody.create(mediaType, bodyValue.toString());
         Request request = new Request.Builder()
                 .url("https://localhost:9200/website/_update/"+w.getDomain())

@@ -1,14 +1,29 @@
 package com.example.domain;
 
+import com.example.utils.ListSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.List;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Website {
     private String domain;
+    @JsonProperty("company_commercial_name")
     private String name;
+    @JsonProperty("company_legal_name")
     private String legalName;
+    @JsonProperty("company_all_available_names")
+    @JsonSerialize(using = ListSerializer.class)
     private List<String> availableNames;
+    @JsonProperty("telephone")
+    @JsonSerialize(using = ListSerializer.class)
     private List<String> telephones;
+    @JsonProperty("socialLinks")
+    @JsonSerialize(using = ListSerializer.class)
     private List<String> mediaLinks;
 
     public Website(String domain, String name, String legalName, List<String> availableNames, List<String> telephones, List<String> mediaLinks) {

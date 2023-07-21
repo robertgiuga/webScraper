@@ -28,7 +28,7 @@ public class Main {
         String url;
         int count=0;
         //Set<Website> websites= writeRepository.readAll();
-        while ((url= readRepository.readLine())!=null&&count<20){
+        while ((url= readRepository.readLine())!=null&&count<10){
             Set<String> phones= new HashSet<>();
             Set<String> socialLinks= new HashSet<>();
             service.setPage("http://"+url+"/contact");
